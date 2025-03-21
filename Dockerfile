@@ -14,9 +14,8 @@ ENV GID=2000
 RUN groupadd -g "${GID}" python \
   && useradd --create-home --no-log-init --shell /bin/bash -u "${UID}" -g "${GID}" python
 
-# For openai access
-# RUN apt update && apt install -y proxychains4
-# COPY ./proxychains.conf /etc/proxychains.conf
+RUN apt update && apt install -y proxychains4
+COPY ./proxychains.conf /etc/proxychains.conf
 
 USER python
 WORKDIR /home/python
@@ -33,5 +32,4 @@ ENV PATH="$PATH:/home/python/.local/bin"
 CMD cd app/db && \
     alembic -c ./alembic.prod.ini upgrade head && \
     cd /home/python && \
-    gunicorn app.main:fastapi_app -w 1 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:80 --forwarded-allow-ips="*"
-    # proxychains4 gunicorn app.main:fastapi_app -w 1 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:80 --forwarded-allow-ips="*"
+    proxychains4 gunicorn app.main:fastapi_app -w 1 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:80 --forwarded-allow-ips="*"

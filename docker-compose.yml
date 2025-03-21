@@ -4,7 +4,7 @@ services:
   app:
     build:
       context: ./
-    container_name: template_app
+    container_name: skinai_app
     depends_on:
       - postgres
     env_file:
@@ -13,15 +13,19 @@ services:
     networks:
       global_network:
       default:
+    ports:
+      - "8000:80"
 
   postgres:
     image: postgres:latest
-    container_name: template_db
+    container_name: skinai_db
     restart: always
     env_file:
       - .env
     networks:
       default:
+    ports:
+      - "5432:5432"
 
 networks:
   global_network:

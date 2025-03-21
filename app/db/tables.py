@@ -3,7 +3,7 @@ import uuid
 from uuid import UUID
 from enum import Enum, auto
 
-from sqlalchemy import bindparam
+from sqlalchemy import JSON, bindparam
 from sqlalchemy import CheckConstraint
 from sqlalchemy import Column
 from sqlalchemy import ForeignKey
@@ -41,16 +41,36 @@ class BaseMixin:
     updated_at: M[dt.datetime | None] = column(nullable=True, onupdate=sql_utcnow)
 
 
-class TaskItem(Base):
-    __tablename__ = "task_items"
+class TaskSkinItem(Base):
+    __tablename__ = "task_skin_items"
 
     id: M[int] = column(primary_key=True, index=True, autoincrement=True)
     task_id: M[UUID] = column(ForeignKey("tasks.id", ondelete="CASCADE"))
 
-    task: M["Task"] = relationship(back_populates="items")
+    skin_type: M[str]
+    problems: M[JSON] = column(type_=JSON)
+    recommendations: M[JSON] = column(type_=JSON)
+
+    task: M["Task"] = relationship(back_populates="skin_items")
+
+
+class TaskProductItem(Base):
+    __tablename__ = "task_product_items"
+
+    id: M[int] = column(primary_key=True, index=True, autoincrement=True)
+    task_id: M[UUID] = column(ForeignKey("tasks.id", ondelete="CASCADE"))
+
+    skin_type: M[str]
+    product_name: M[str]
+    ingredients: M[JSON] = column(type_=JSON)
+
+    task: M["Task"] = relationship(back_populates="product_items")
 
 
 class Task(BaseMixin, Base):
     error: M[str | None] = column(nullable=True)
+    app_bundle: M[str]
+    user_id: M[str]
 
-    items: M[list["TaskItem"]] = relationship(back_populates="task", lazy="selectin")
+    skin_items: M[list["TaskSkinItem"]] = relationship(back_populates="task", lazy="selectin")
+    product_items: M[list["TaskProductItem"]] = relationship(back_populates="task", lazy="selectin")

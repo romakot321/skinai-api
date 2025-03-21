@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy_service import BaseService as BaseRepository
 from uuid import UUID
 
-from app.db.tables import Task, TaskItem, engine
+from app.db.tables import Task, TaskSkinItem, TaskProductItem, engine
 
 
 class TaskRepository[Table: Task, int](BaseRepository):
@@ -30,8 +30,10 @@ class TaskRepository[Table: Task, int](BaseRepository):
         self.response.status_code = 201
         return await self.get(model.id)
 
-    async def create_items(self, *models: TaskItem):
+    async def create_items(self, *models):
         [self.session.add(model) for model in models]
+        self.objects_to_refresh = models
+        self._need_commit_and_close = True
         await self._commit()
 
     async def list(self, page=None, count=None) -> list[Task]:
@@ -40,7 +42,7 @@ class TaskRepository[Table: Task, int](BaseRepository):
     async def get(self, model_id: UUID) -> Task:
         return await self._get_one(
             id=model_id,
-            select_in_load=[Task.items]
+            select_in_load=[Task.product_items, Task.skin_items]
         )
 
     async def update(self, model_id: UUID, **fields) -> Task:

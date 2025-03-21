@@ -51,9 +51,11 @@ def init_web_application():
         register_exception(application)
         register_cors(application)
 
-    from app.routes.task import router as task_router
+    from app.routes.task_skin import router as task_skin_router
+    from app.routes.task_product import router as task_product_router
 
-    application.include_router(task_router)
+    application.include_router(task_skin_router)
+    application.include_router(task_product_router)
 
     attach_admin_panel(application)
 
