@@ -25,7 +25,7 @@ class TaskProductService:
         return TaskProductSchema.model_validate(model)
 
     async def send(self, task_id: UUID, image_body: bytes):
-        response = await self.external_repository.recognize_product(image_body, "russian")
+        response = await self.external_repository.recognize_product(image_body, "english")
 
         try:
             schema = ExternalTaskProductSchema.model_validate(response)

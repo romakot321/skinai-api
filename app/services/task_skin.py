@@ -25,7 +25,7 @@ class TaskSkinService:
         return TaskSkinSchema.model_validate(model)
 
     async def send(self, task_id: UUID, image_body: bytes):
-        response = await self.external_repository.recognize_skin(image_body, "russian")
+        response = await self.external_repository.recognize_skin(image_body, "english")
 
         try:
             schema = ExternalTaskSkinSchema.model_validate(response)
