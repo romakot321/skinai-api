@@ -29,7 +29,7 @@ async def create_task(
     service: TaskSkinService = Depends(),
 ):
     task = await service.create(schema)
-    background_tasks.add_task(service.send, task.id, await file.read())
+    background_tasks.add_task(service.send, task.id, await file.read(), schema.language)
     return task
 
 

@@ -2,13 +2,21 @@ from pydantic import BaseModel
 
 
 class ExternalTaskSkinSchema(BaseModel):
-    class Recommendations(BaseModel):
-        morning: list[str]
-        evening: list[str]
+    class Score(BaseModel):
+        class ScoreValue(BaseModel):
+            value: int
+            recommendations: list[str]
+
+        overall: ScoreValue
+        hydration: ScoreValue
+        texture: ScoreValue
+        redness: ScoreValue
+        acne: ScoreValue
+        wrinkles: ScoreValue
 
     skin_type: str
     problems: list[str]
-    recommendations: Recommendations
+    score: Score
 
 
 class ExternalTaskProductSchema(BaseModel):
