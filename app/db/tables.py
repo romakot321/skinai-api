@@ -49,7 +49,7 @@ class TaskSkinItem(Base):
 
     skin_type: M[str]
     problems: M[JSON] = column(type_=JSON)
-    recommendations: M[JSON] = column(type_=JSON)
+    score: M[JSON] = column(type_=JSON)
 
     task: M["Task"] = relationship(back_populates="skin_items")
 

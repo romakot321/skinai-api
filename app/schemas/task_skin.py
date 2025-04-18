@@ -6,14 +6,22 @@ from app.schemas import BaseSearchSchema
 
 class TaskSkinSchema(BaseModel):
     class TaskSkinItem(BaseModel):
-        class Recommendations(BaseModel):
-            morning: list[str]
-            evening: list[str]
+        class Score(BaseModel):
+            class ScoreValue(BaseModel):
+                value: int
+                recommendations: list[str]
+
+            overall: ScoreValue
+            hydration: ScoreValue
+            texture: ScoreValue
+            redness: ScoreValue
+            acne: ScoreValue
+            wrinkles: ScoreValue
 
         id: int
         skin_type: str
         problems: list[str]
-        recommendations: Recommendations
+        score: Score
 
         model_config = ConfigDict(from_attributes=True)
 
@@ -40,3 +48,4 @@ class TaskSkinSearchSchema(BaseSearchSchema):
 class TaskSkinCreateSchema(BaseModel):
     app_bundle: str
     user_id: str
+    language: str = "russian"
