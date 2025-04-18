@@ -48,4 +48,4 @@ class TaskSkinSearchSchema(BaseSearchSchema):
 class TaskSkinCreateSchema(BaseModel):
     app_bundle: str
     user_id: str
-    language: str = "russian"
+    language: str = "english"
