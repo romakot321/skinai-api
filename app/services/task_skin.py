@@ -20,9 +20,8 @@ class TaskSkinService:
         self.external_repository = external_repository
 
     async def create(self, schema: TaskSkinCreateSchema) -> TaskSkinSchema:
-        model = Task(**schema.model_dump())
-        model = await self.task_repository.store(model)
-        return TaskSkinSchema.model_validate(model)
+        model = await self.task_repository.create(**schema.model_dump(exclude="language"))
+        return TaskSkinSchema(id=model.id, skin_items=[])
 
     async def send(self, task_id: UUID, image_body: bytes, language: str):
         response = await self.external_repository.recognize_skin(image_body, language)
